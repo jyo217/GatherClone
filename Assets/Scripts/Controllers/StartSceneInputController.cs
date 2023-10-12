@@ -7,7 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class StartSceneInputController : MonoBehaviour
 {
+    public static StartSceneInputController instance;
     private PlayerCharacterController characterController;
+    private GameObject background;
     private InputField nameField;
     private Button startBtn;
     private Text startBtnText;
@@ -15,10 +17,20 @@ public class StartSceneInputController : MonoBehaviour
     private string ActiveMsg = "Start!!!";
     public string nameText;
 
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<PlayerCharacterController>();
+        background = GameObject.Find("Background");
         nameField = GameObject.Find("NameField").GetComponent<InputField>();
         startBtn = GameObject.Find("StartBtn").GetComponent<Button>();
         startBtnText = GameObject.Find("StartBtnText").GetComponent<Text>();
@@ -43,11 +55,11 @@ public class StartSceneInputController : MonoBehaviour
     public void OnClickButton()
     {
         Debug.Log($"Button Clicked, Player Name is {nameField.text}");
-        DontDestroyOnLoad(nameField);
-
-        //메인 씬에서 작동할 캐릭터 컨트롤러의 이름 변경 메소드 호출, 메인 씬 실행
         SceneManager.LoadScene("MainScene");
-        characterController.Rename(nameField.text);
     }
 
+    public void SetActive(bool isTrue)
+    {
+        gameObject.SetActive(isTrue);
+    }
 }
